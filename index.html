@@ -3,67 +3,481 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAZDIA - Pagina Personală</title>
+    <title>RAZDIA Atelier - Desene independente valorificate</title>
     <style>
+        :root {
+            color-scheme: dark;
+            --bg: #130f1f;
+            --panel: rgba(24, 18, 38, 0.86);
+            --panel-strong: rgba(255, 255, 255, 0.11);
+            --accent: #ffb86b;
+            --accent-2: #8be9fd;
+            --text: #fff8ef;
+            --muted: #d8cee9;
+            --success: #64f4ac;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: Inter, Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-image: url('images/bufnita.jpg');
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(19, 15, 31, 0.95), rgba(77, 39, 79, 0.78)),
+                url('images/bufnita.jpg');
             background-size: cover;
             background-position: center;
-            color: #fff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            background-attachment: fixed;
+            color: var(--text);
         }
+
+        a {
+            color: inherit;
+        }
+
         header {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
+            padding: 28px clamp(20px, 5vw, 72px) 18px;
         }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 56px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent), #ff6f91);
+            color: #211627;
+            box-shadow: 0 10px 32px rgba(255, 184, 107, 0.35);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+            gap: clamp(28px, 5vw, 72px);
+            align-items: center;
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 18px 0;
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            line-height: 0.95;
+            letter-spacing: -0.06em;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            line-height: 1.7;
+            max-width: 680px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 16px;
+            background: var(--accent);
+            color: #211627;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button.secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .stats-card,
+        .upload-card,
+        .art-card,
+        .feature {
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: var(--panel);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .stats-card {
+            padding: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .stat {
+            padding: 18px;
+            border-radius: 22px;
+            background: var(--panel-strong);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
         main {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 48px clamp(20px, 5vw, 72px) 72px;
         }
+
         section {
+            margin-bottom: 56px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
             margin-bottom: 20px;
         }
-        footer {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+
+        h2 {
+            margin: 0;
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            letter-spacing: -0.04em;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
+
+        .section-heading p,
+        .feature p,
+        .art-card p,
+        label,
+        .small-note {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .feature {
+            padding: 22px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+        }
+
+        .upload-card {
+            padding: clamp(20px, 4vw, 32px);
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: grid;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 16px;
+            padding: 13px 14px;
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .art-card {
+            overflow: hidden;
+        }
+
+        .art-preview {
+            min-height: 220px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #ffb86b, #bd93f9 55%, #8be9fd);
+            color: rgba(33, 22, 39, 0.78);
+            font-size: 4rem;
+        }
+
+        .art-card:nth-child(2) .art-preview {
+            background: linear-gradient(135deg, #64f4ac, #8be9fd 55%, #bd93f9);
+        }
+
+        .art-card:nth-child(3) .art-preview {
+            background: linear-gradient(135deg, #ff6f91, #ffb86b 55%, #f8f8f2);
+        }
+
+        .art-body {
+            padding: 20px;
+        }
+
+        .meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .price {
+            color: var(--success);
+            font-size: 1.35rem;
+            font-weight: 900;
+        }
+
+        footer {
+            padding: 28px clamp(20px, 5vw, 72px);
+            background: rgba(0, 0, 0, 0.38);
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 860px) {
+            .hero,
+            .features,
+            .gallery,
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-heading {
+                align-items: start;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>RAZDIA</h1>
-        <p>Bine ai venit pe pagina mea personală!</p>
+        <nav aria-label="Navigare principală">
+            <div class="brand"><span class="brand-mark">R</span> RAZDIA Atelier</div>
+            <div class="nav-links">
+                <a href="#incarca">Încarcă desene</a>
+                <a href="#galerie">Galerie</a>
+                <a href="#valorificare">Valorificare</a>
+            </div>
+        </nav>
+
+        <div class="hero">
+            <div>
+                <span class="eyebrow">🎨 Pentru artiști independenți</span>
+                <h1>O piață digitală pentru desene cu poveste.</h1>
+                <p>RAZDIA Atelier este locul unde poți urca mai multe desene create de artiști independenți, precum Cami, le poți organiza într-o galerie curată și le poți transforma în produse vandabile: printuri, licențe digitale sau comenzi personalizate.</p>
+                <div class="actions">
+                    <a class="button" href="#incarca">Începe cu o lucrare</a>
+                    <a class="button secondary" href="#valorificare">Vezi cum monetizăm</a>
+                </div>
+            </div>
+            <aside class="stats-card" aria-label="Indicatori platformă">
+                <span class="eyebrow">Plan de lansare</span>
+                <div class="stats-grid">
+                    <div class="stat"><strong>3</strong> moduri de vânzare</div>
+                    <div class="stat"><strong>0%</strong> taxă de listare la început</div>
+                    <div class="stat"><strong>24h</strong> feedback curatoriat</div>
+                    <div class="stat"><strong>100%</strong> credit pentru artist</div>
+                </div>
+            </aside>
+        </div>
     </header>
-    <main class="container">
-        <section>
-            <h2>Despre Mine</h2>
-            <p>Sunt Razvan și aceasta este pagina mea personală. Aici vei găsi informații despre mine, proiectele mele și pasiunile mele.</p>
+
+    <main>
+        <section id="valorificare">
+            <div class="section-heading">
+                <div>
+                    <h2>Cum valorificăm desenele</h2>
+                    <p>Transformăm arhiva artistică într-un flux simplu de publicare, promovare și vânzare.</p>
+                </div>
+            </div>
+            <div class="features">
+                <article class="feature">
+                    <div class="feature-icon">🖼️</div>
+                    <h3>Printuri și colecții</h3>
+                    <p>Grupează lucrările pe teme și pregătește-le pentru printuri limitate, postere sau pachete cadou.</p>
+                </article>
+                <article class="feature">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Licențe digitale</h3>
+                    <p>Definește clar dacă desenul poate fi folosit pentru coperți, social media, textile sau branding.</p>
+                </article>
+                <article class="feature">
+                    <div class="feature-icon">💬</div>
+                    <h3>Comenzi personalizate</h3>
+                    <p>Primește cereri de la clienți, păstrează brief-ul lângă lucrare și urmărește valoarea potențială.</p>
+                </article>
+            </div>
         </section>
-        <section>
-            <h2>Proiectele Mele</h2>
-            <p>Aici voi adăuga informații despre proiectele mele.</p>
+
+        <section id="incarca">
+            <div class="section-heading">
+                <div>
+                    <h2>Încarcă o lucrare</h2>
+                    <p>Formularul este pregătit ca interfață de produs; următorul pas poate fi conectarea la un backend cu autentificare și stocare fișiere.</p>
+                </div>
+            </div>
+            <div class="upload-card">
+                <form>
+                    <label class="field">
+                        Numele artistului
+                        <input type="text" name="artist" placeholder="Ex: Cami" autocomplete="name">
+                    </label>
+                    <label class="field">
+                        Titlul desenului
+                        <input type="text" name="title" placeholder="Ex: Bufnița visătoare">
+                    </label>
+                    <label class="field">
+                        Tip de valorificare
+                        <select name="monetization">
+                            <option>Print fizic</option>
+                            <option>Licență digitală</option>
+                            <option>Comandă personalizată</option>
+                            <option>Colecție mixtă</option>
+                        </select>
+                    </label>
+                    <label class="field">
+                        Preț recomandat
+                        <input type="number" name="price" min="0" step="10" placeholder="Ex: 250">
+                    </label>
+                    <label class="field full">
+                        Fișiere desen
+                        <input type="file" name="artwork" accept="image/*" multiple>
+                    </label>
+                    <label class="field full">
+                        Povestea lucrării
+                        <textarea name="story" placeholder="Scrie inspirația, tehnica, dimensiunea originală și orice detaliu care ajută cumpărătorul să se conecteze cu lucrarea."></textarea>
+                    </label>
+                    <div class="field full">
+                        <button class="button" type="button">Salvează în galerie</button>
+                        <p class="small-note">Demo vizual: butonul nu trimite încă date, dar arată fluxul dorit pentru aplicație.</p>
+                    </div>
+                </form>
+            </div>
         </section>
-        <section>
-            <h2>Contact</h2>
-            <p>Pentru a mă contacta, poți să-mi trimiți un email la <a href="mailto:razvan@example.com">razvan@example.com</a>.</p>
+
+        <section id="galerie">
+            <div class="section-heading">
+                <div>
+                    <h2>Galerie curatoriată</h2>
+                    <p>Exemple de listări pentru artiști independenți, gata de prezentat cumpărătorilor sau partenerilor.</p>
+                </div>
+                <a class="button secondary" href="mailto:contact@razdia.art">Propune un artist</a>
+            </div>
+            <div class="gallery">
+                <article class="art-card">
+                    <div class="art-preview" aria-hidden="true">🦉</div>
+                    <div class="art-body">
+                        <div class="meta"><span>Cami</span><span>Print limitat</span></div>
+                        <h3>Bufnița visătoare</h3>
+                        <p>Un desen cald, potrivit pentru printuri de perete și colecții dedicate naturii nocturne.</p>
+                        <div class="meta"><span class="price">250 lei</span><span>30 exemplare</span></div>
+                    </div>
+                </article>
+                <article class="art-card">
+                    <div class="art-preview" aria-hidden="true">🌿</div>
+                    <div class="art-body">
+                        <div class="meta"><span>Artist invitat</span><span>Licență digitală</span></div>
+                        <h3>Grădina urbană</h3>
+                        <p>Ilustrație flexibilă pentru materiale editoriale, ambalaje sau campanii creative.</p>
+                        <div class="meta"><span class="price">480 lei</span><span>utilizare comercială</span></div>
+                    </div>
+                </article>
+                <article class="art-card">
+                    <div class="art-preview" aria-hidden="true">✨</div>
+                    <div class="art-body">
+                        <div class="meta"><span>Colecție RAZDIA</span><span>Comandă</span></div>
+                        <h3>Portret cu lumină</h3>
+                        <p>Model pentru comenzi personalizate, cu brief clar și estimare de livrare.</p>
+                        <div class="meta"><span class="price">de la 700 lei</span><span>7 zile</span></div>
+                    </div>
+                </article>
+            </div>
         </section>
     </main>
+
     <footer>
-        <p>&copy; 2024 RAZDIA. Toate drepturile rezervate.</p>
+        <p>&copy; 2026 RAZDIA Atelier. Platformă pentru artiști independenți, colecționari și proiecte creative.</p>
     </footer>
 </body>
 </html>
