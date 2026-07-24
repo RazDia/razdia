@@ -445,7 +445,7 @@
                     </label>
                     <label class="field full">
                         Fișiere desen
-                        <input type="file" name="artwork" accept="image/*" multiple>
+                        <input type="file" name="artwork" accept="image/*" multiple required>
                     </label>
                     <label class="field full">
                         Povestea lucrării
@@ -510,15 +510,49 @@
         const exportButton = document.querySelector('#exportGallery');
 
         const defaultCards = gallery.innerHTML;
-        const readStoredArtworks = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        const writeStoredArtworks = (items) => localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        let memoryFallback = [];
+        let storageAvailable = true;
 
-        const escapeHtml = (value) => value.replace(/[&<>"]/g, (character) => ({
+        const readStoredArtworks = () => {
+            if (!storageAvailable) {
+                return memoryFallback;
+            }
+
+            try {
+                const parsedItems = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                return Array.isArray(parsedItems) ? parsedItems : [];
+            } catch {
+                storageAvailable = false;
+                return memoryFallback;
+            }
+        };
+
+        const writeStoredArtworks = (items) => {
+            memoryFallback = items;
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+                storageAvailable = true;
+                return true;
+            } catch {
+                storageAvailable = false;
+                return false;
+            }
+        };
+
+        const escapeHtml = (value) => String(value || '').replace(/[&<>"]/g, (character) => ({
             '&': '&amp;',
             '<': '&lt;',
             '>': '&gt;',
             '"': '&quot;'
         }[character]));
+
+        const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error(`Nu am putut citi fișierul ${file.name}.`));
+            reader.readAsDataURL(file);
+        });
 
         const renderUploadedCard = (item) => `
             <article class="art-card">
@@ -540,33 +574,46 @@
             event.preventDefault();
             const data = new FormData(form);
             const files = data.getAll('artwork').filter((file) => file && file.name);
-            const firstFile = files[0];
-            const image = firstFile ? await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.readAsDataURL(firstFile);
-            }) : '';
 
-            const item = {
-                artist: data.get('artist')?.trim() || 'Artist independent',
-                title: data.get('title')?.trim() || 'Lucrare fără titlu',
-                monetization: data.get('monetization') || 'Colecție mixtă',
-                price: data.get('price') ? `${data.get('price')} lei` : '',
-                story: data.get('story')?.trim() || '',
-                fileCount: String(files.length || 0),
-                image,
-                createdAt: new Date().toISOString()
-            };
+            if (!files.length) {
+                statusMessage.textContent = 'Alege cel puțin un fișier imagine înainte să salvezi.';
+                statusMessage.classList.add('visible');
+                return;
+            }
 
-            writeStoredArtworks([item, ...readStoredArtworks()]);
-            renderGallery();
-            form.reset();
-            statusMessage.textContent = `Lucrarea „${item.title}” a fost salvată local și poate fi văzută în galerie.`;
-            statusMessage.classList.add('visible');
+            try {
+                const baseItem = {
+                    artist: data.get('artist')?.trim() || 'Artist independent',
+                    title: data.get('title')?.trim() || 'Lucrare fără titlu',
+                    monetization: data.get('monetization') || 'Colecție mixtă',
+                    price: data.get('price') ? `${data.get('price')} lei` : '',
+                    story: data.get('story')?.trim() || '',
+                    createdAt: new Date().toISOString()
+                };
+
+                const uploadedItems = await Promise.all(files.map(async (file, index) => ({
+                    ...baseItem,
+                    title: files.length > 1 ? `${baseItem.title} #${index + 1}` : baseItem.title,
+                    fileCount: '1',
+                    fileName: file.name,
+                    image: await readFileAsDataUrl(file)
+                })));
+
+                const persisted = writeStoredArtworks([...uploadedItems, ...readStoredArtworks()]);
+                renderGallery();
+                form.reset();
+                statusMessage.textContent = persisted
+                    ? `${uploadedItems.length} lucrare/lucrări au fost salvate local și se văd în galerie.`
+                    : `${uploadedItems.length} lucrare/lucrări se văd în galerie doar până închizi pagina; spațiul de stocare locală este indisponibil sau plin.`;
+                statusMessage.classList.add('visible');
+            } catch (error) {
+                statusMessage.textContent = `${error.message} Dacă ai încărcat imagini foarte mari, încearcă poze mai mici sau exportă și golește galeria locală.`;
+                statusMessage.classList.add('visible');
+            }
         });
 
         exportButton.addEventListener('click', () => {
-            const payload = JSON.stringify(readStoredArtworks(), null, 2);
+            const payload = JSON.stringify(readStoredArtworks().map(({ image, ...item }) => item), null, 2);
             const blob = new Blob([payload], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
